@@ -1,0 +1,85 @@
+---
+import type { Skill } from "../../types/index";
+
+export interface Props {
+  skills: Skill[];
+}
+
+const { skills } = Astro.props;
+
+const grouped = skills.reduce(
+  (acc, skill) => {
+    if (!acc[skill.category]) acc[skill.category] = [];
+    acc[skill.category].push(skill);
+    return acc;
+  },
+  {} as Record<string, Skill[]>
+);
+
+const categories = Object.keys(grouped).sort();
+---
+
+<section id="skill" class="py-24 relative overflow-hidden">
+  <div class="absolute top-0 left-1/4 w-64 h-64 bg-pr-green/5 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-pr-green/3 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <p class="text-pr-green dark:text-pr-magenta text-sm font-semibold tracking-widest uppercase mb-3">What I know</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">Technical Skills</h2>
+      <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-pr-green dark:via-pr-magenta to-transparent mx-auto"></div>
+    </div>
+
+    {categories.map((category) => (
+      <div class="mb-12">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-pr-green dark:text-pr-magenta font-semibold text-base">{category}</span>
+          <div class="flex-1 h-px bg-pr-green/20 dark:bg-pr-magenta/20"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {grouped[category].map((skill) => (
+            <div class="group relative bg-sr-black dark:bg-pr-green/8 border border-pr-green/10 hover:border-pr-green/40 dark:border-pr-magenta/10 dark:hover:border-pr-magenta/40 rounded-xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-pr-green/10">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl select-none" aria-hidden="true">{skill.icon}</span>
+                <span class="text-foreground font-medium text-sm">{skill.name}</span>
+              </div>
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs">
+                  <span class="text-foreground/50">Proficiency</span>
+                  <span class="text-pr-green dark:text-pr-magenta font-semibold">{skill.level}%</span>
+                </div>
+                <div class="w-full h-1.5 bg-foreground/5 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-gradient-to-r from-pr-green to-sr-green dark:from-pr-magenta dark:to-tr-magenta rounded-full transition-all duration-1000 skill-bar"
+                    style={`--target-width: ${skill.level}%; width: 0%`}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const bars = entry.target.querySelectorAll<HTMLElement>(".skill-bar");
+          bars.forEach((bar) => {
+            const target = bar.style.getPropertyValue("--target-width");
+            bar.style.width = target;
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll("#skill").forEach((el) => observer.observe(el));
+</script>

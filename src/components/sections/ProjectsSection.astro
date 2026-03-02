@@ -1,0 +1,147 @@
+---
+import type { Project } from "../../types/index";
+
+export interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+const featured = projects.filter((p) => p.featured);
+const rest = projects.filter((p) => !p.featured);
+---
+
+<section id="portfolio" class="py-24 relative overflow-hidden">
+  <div class="absolute top-1/3 right-0 w-64 h-64 bg-pr-green/5 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <p class="text-pr-green dark:text-pr-magenta text-sm font-semibold tracking-widest uppercase mb-3">What I've built</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">Portfolio</h2>
+      <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-pr-green dark:via-pr-magenta to-transparent mx-auto"></div>
+    </div>
+
+    <!-- Featured Projects -->
+    {featured.length > 0 && (
+      <div class="mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {featured.map((project) => (
+            <article class="group relative bg-sr-black dark:bg-pr-green/8 border border-pr-green/10 hover:border-pr-green/40 dark:border-pr-magenta/10 dark:hover:border-pr-magenta/40 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pr-green/10 flex flex-col">
+              <!-- Image -->
+              <div class="relative h-52 bg-pr-black dark:bg-pr-green/5 overflow-hidden">
+                {project.imageUrl ? (
+                  <img
+                    src={project.imageUrl}
+                    alt={project.title}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center">
+                    <div class="text-6xl opacity-20 select-none">⬡</div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-pr-green/10 to-transparent"></div>
+                  </div>
+                )}
+                {project.featured && (
+                  <span class="absolute top-3 right-3 bg-pr-green/20 border border-pr-green/40 text-pr-green text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
+                    Featured
+                  </span>
+                )}
+              </div>
+
+              <!-- Content -->
+              <div class="p-6 flex flex-col flex-1">
+                <h3 class="text-foreground font-bold text-xl mb-2 group-hover:text-pr-green dark:group-hover:text-pr-magenta transition-colors duration-200">
+                  {project.title}
+                </h3>
+                <p class="text-foreground/50 text-sm leading-relaxed mb-4 flex-1">{project.description}</p>
+
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-2 mb-5">
+                  {project.tags.map((tag) => (
+                    <span class="text-xs text-pr-green dark:text-pr-magenta border border-pr-green/30 dark:border-pr-magenta/30 bg-pr-green/5 dark:bg-pr-magenta/5 px-2.5 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                <!-- Links -->
+                <div class="flex gap-3 mt-auto">
+                  {project.liveUrl && project.liveUrl !== "#" && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center gap-1.5 text-sm font-medium text-pr-green dark:text-pr-magenta hover:text-foreground border border-pr-green/30 dark:border-pr-magenta/30 hover:border-pr-green dark:hover:border-pr-magenta hover:bg-pr-green/10 dark:hover:bg-pr-magenta/10 px-4 py-2 rounded-lg transition-all duration-200"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      Live Demo
+                    </a>
+                  )}
+                  {project.githubUrl && project.githubUrl !== "#" && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center gap-1.5 text-sm font-medium text-foreground/50 hover:text-foreground border border-foreground/10 hover:border-foreground/30 px-4 py-2 rounded-lg transition-all duration-200"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                      </svg>
+                      Code
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Other Projects -->
+    {rest.length > 0 && (
+      <div>
+        <h3 class="text-foreground/40 text-sm font-medium tracking-widest uppercase mb-6">Other projects</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {rest.map((project) => (
+            <article class="group bg-sr-black dark:bg-pr-green/8 border border-pr-green/10 hover:border-pr-green/30 dark:border-pr-magenta/10 dark:hover:border-pr-magenta/30 rounded-xl p-5 transition-all duration-300 hover:-translate-y-1 flex flex-col">
+              <div class="flex items-start justify-between mb-3">
+                <h3 class="text-foreground font-semibold group-hover:text-pr-green dark:group-hover:text-pr-magenta transition-colors duration-200 leading-tight">
+                  {project.title}
+                </h3>
+                <div class="flex gap-2 ml-2 shrink-0">
+                  {project.liveUrl && project.liveUrl !== "#" && (
+                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class="text-foreground/40 hover:text-pr-green dark:hover:text-pr-magenta transition-colors duration-200" aria-label="Live demo">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
+                  {project.githubUrl && project.githubUrl !== "#" && (
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="text-foreground/40 hover:text-pr-green dark:hover:text-pr-magenta transition-colors duration-200" aria-label="GitHub">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+              <p class="text-foreground/50 text-xs leading-relaxed mb-4 flex-1">{project.description}</p>
+              <div class="flex flex-wrap gap-1.5">
+                {project.tags.slice(0, 3).map((tag) => (
+                  <span class="text-xs text-pr-green/70 dark:text-pr-magenta/70 border border-pr-green/20 dark:border-pr-magenta/20 px-2 py-0.5 rounded-full">{tag}</span>
+                ))}
+                {project.tags.length > 3 && (
+                  <span class="text-xs text-foreground/40 px-2 py-0.5">+{project.tags.length - 3}</span>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
