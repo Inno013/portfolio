@@ -1,5 +1,6 @@
 ---
 import type { Skill } from "../../types/index";
+import { getSkillSvg } from "../../lib/skillIcons";
 
 export interface Props {
   skills: Skill[];
@@ -41,7 +42,7 @@ const categories = Object.keys(grouped).sort();
           {grouped[category].map((skill) => (
             <div class="group relative bg-sr-black dark:bg-pr-green/8 border border-pr-green/10 hover:border-pr-green/40 dark:border-pr-magenta/10 dark:hover:border-pr-magenta/40 rounded-xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-pr-green/10">
               <div class="flex items-center gap-3 mb-4">
-                <span class="text-2xl select-none" aria-hidden="true">{skill.icon}</span>
+                <span class="w-7 h-7 shrink-0 text-pr-green dark:text-pr-magenta" set:html={getSkillSvg(skill.name, "w-full h-full")} />
                 <span class="text-foreground font-medium text-sm">{skill.name}</span>
               </div>
               <div class="space-y-1.5">
