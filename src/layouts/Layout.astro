@@ -49,8 +49,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
         const saved = localStorage.getItem('theme');
         const theme = saved ?? 'dark';
 		console.log('Applying theme:', theme);
-        if (theme === 'dark') document.documentElement.classList.remove('dark');
-        else document.documentElement.classList.add('dark');
+        if (theme === 'dark') {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
       })();
     </script>
   </head>
